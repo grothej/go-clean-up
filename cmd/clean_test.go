@@ -47,7 +47,7 @@ func TestDefaultClean(t *testing.T) {
 	filesToDelete := []string{"old-log.log", ".DS_Store"}
 	setupTestDir(filesToDelete, t)
 
-	clean()
+	Clean()
 
 	assertFilesAreDeleted(filesToDelete, t)
 }
