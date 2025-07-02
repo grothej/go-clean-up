@@ -7,7 +7,7 @@ import (
 )
 
 var Dir string
-var IsDryRun *bool
+var IsDryRun bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -31,6 +31,6 @@ func init() {
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.go-clean-up.git.yaml)")
 
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	IsDryRun = rootCmd.PersistentFlags().BoolP("dry-run", "d", true, "-d, --dry-run only output files that would be deleted (default false)")
+	rootCmd.PersistentFlags().BoolVarP(&IsDryRun, "dry-run", "d", true, "-d, --dry-run only output files that would be deleted (default false)")
 	rootCmd.PersistentFlags().StringVar(&Dir, "dir", cwd, "--dir directory to clean up (default is working dir)")
 }

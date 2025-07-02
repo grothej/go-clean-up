@@ -28,5 +28,5 @@ func init() {
 
 func Clean() {
 	fmt.Printf("cleaning: %s\n", Dir)
-	fmt.Printf("is dry run? -> %v\n", *IsDryRun)
+	fmt.Printf("is dry run? -> %v\n", IsDryRun)
 }
