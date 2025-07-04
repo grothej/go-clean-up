@@ -2,6 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"io/fs"
+	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 )
@@ -27,6 +30,42 @@ func init() {
 }
 
 func Clean() {
-	fmt.Printf("cleaning: %s\n", Dir)
-	fmt.Printf("is dry run? -> %v\n", IsDryRun)
+	var err error
+	if Dir == "" {
+		Dir, err = os.Getwd()
+	}
+
+	if err != nil {
+		return
+	}
+
+	var clearedDiscSpace int
+	err = filepath.Walk(Dir, func(path string, info fs.FileInfo, err error) error {
+		if info.IsDir() {
+			fmt.Println("Skip path ", path, ". Is a directory")
+			return nil
+		}
+		if isFileCleanable(info) {
+			fmt.Printf("File: %s would be removed\n", info.Name())
+			clearedDiscSpace += int(info.Size())
+		}
+
+		return nil
+	})
+	fmt.Println("Cleaned disc space:", clearedDiscSpace)
+
+	if err != nil {
+		return
+	}
+}
+
+func isFileCleanable(info fs.FileInfo) bool {
+	ext := filepath.Ext(info.Name())
+	return isExtensionCleanable(ext)
+
+}
+
+func isExtensionCleanable(ext string) bool {
+	return true
+
 }
