@@ -39,13 +39,14 @@ func Clean() {
 	var clearedDiscSpace int
 	err = filepath.Walk(Dir, func(path string, info fs.FileInfo, err error) error {
 		if info.IsDir() {
-			fmt.Println("Skip path ", path, ". Is a directory")
+			fmt.Println("Skip path ", path, " : is a directory")
 			return nil
 		}
+
 		if isFileCleanable(info) {
 			err := os.Remove(path)
 			if err != nil {
-				fmt.Println("Couldn't remove ", info.Name())
+				fmt.Println("Couldn't remove ", path)
 			}
 
 			clearedDiscSpace += int(info.Size())
@@ -53,15 +54,14 @@ func Clean() {
 
 		return nil
 	})
-	fmt.Println("Cleaned disc space:", clearedDiscSpace)
 
+	fmt.Println("Total cleaned disc space:", clearedDiscSpace)
 	if err != nil {
 		return
 	}
 }
 
 func isFileCleanable(info fs.FileInfo) bool {
-	ext := filepath.Ext(info.Name())
-	return clean.IsExtensionCleanable(ext)
+	return clean.IsFileOlderThanTTL(info) || clean.IsExtensionCleanable(info)
 
 }
