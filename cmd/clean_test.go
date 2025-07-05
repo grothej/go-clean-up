@@ -51,3 +51,14 @@ func TestDefaultClean(t *testing.T) {
 
 	assertFilesAreDeleted(filesToDelete, t)
 }
+
+func TestCleanByExtension(t *testing.T) {
+	filesToDelete := []string{"old-log.log", ".DS_Store"}
+	fileToKeep := []string{"important.txt", "secret.yaml"}
+	filesToSetup := append(fileToKeep, filesToDelete...)
+	setupTestDir(filesToSetup, t)
+
+	Clean()
+
+	assertFilesAreDeleted(filesToDelete, t)
+}
