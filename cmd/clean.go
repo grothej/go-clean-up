@@ -47,9 +47,10 @@ func Clean() {
 			err := os.Remove(path)
 			if err != nil {
 				fmt.Println("Couldn't remove ", path)
+			} else {
+				fmt.Println("Removed file: ", path)
+				clearedDiscSpace += int(info.Size())
 			}
-
-			clearedDiscSpace += int(info.Size())
 		}
 
 		return nil
@@ -63,5 +64,4 @@ func Clean() {
 
 func isFileCleanable(info fs.FileInfo) bool {
 	return clean.IsFileOlderThanTTL(info) || clean.IsExtensionCleanable(info)
-
 }
