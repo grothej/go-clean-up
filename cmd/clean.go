@@ -17,7 +17,7 @@ var cleanCmd = &cobra.Command{
 	Short: "TBD",
 	Long:  `TBD`,
 	Run: func(cmd *cobra.Command, args []string) {
-		Clean()
+		Clean(Dir)
 	},
 }
 
@@ -26,10 +26,10 @@ func init() {
 
 }
 
-func Clean() {
+func Clean(dir string) {
 	var err error
-	if Dir == "" {
-		Dir, err = os.Getwd()
+	if dir == "" {
+		dir, err = os.Getwd()
 	}
 
 	if err != nil {
@@ -37,7 +37,7 @@ func Clean() {
 	}
 
 	var clearedDiscSpace int
-	err = filepath.Walk(Dir, func(path string, info fs.FileInfo, err error) error {
+	err = filepath.Walk(dir, func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
