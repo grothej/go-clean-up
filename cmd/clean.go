@@ -38,6 +38,10 @@ func Clean() {
 
 	var clearedDiscSpace int
 	err = filepath.Walk(Dir, func(path string, info fs.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
 		if info.IsDir() {
 			fmt.Println("Skip path ", path, " : is a directory")
 			return nil
@@ -51,6 +55,8 @@ func Clean() {
 				fmt.Println("Removed file: ", path)
 				clearedDiscSpace += int(info.Size())
 			}
+
+			return err
 		}
 
 		return nil
