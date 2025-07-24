@@ -26,7 +26,7 @@ func init() {
 
 }
 
-func Clean(dir string) {
+func Clean(fsys fs.FS) {
 	var err error
 	if dir == "" {
 		dir, err = os.Getwd()
