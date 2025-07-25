@@ -12,16 +12,20 @@ func TestDefaultClean(t *testing.T) {
 		".DS_Store":  {Data: []byte("system file")},
 	}
 
-	Clean()
+	Clean(fsys)
 
 	fstest.TestFS(fsys, "keep.txt")
 }
 
 func TestCleanByExtension(t *testing.T) {
-	filesToDelete := []string{"old-log.log", ".DS_Store"}
-	fileToKeep := []string{"important.txt", "secret.yaml"}
+	fsys := fstest.MapFS{
+		"old-log.log":   {Data: []byte("remove this")},
+		".DS_Store":     {Data: []byte("system file")},
+		"important.txt": {Data: []byte("system file")},
+		"secret.yaml":   {Data: []byte("apiVersion: secret/v1")},
+	}
 
-	Clean(dir)
+	Clean(fsys)
 
-	fstest.TestFS(fsys)
+	fstest.TestFS(fsys, "secret.yaml", "important.txt")
 }

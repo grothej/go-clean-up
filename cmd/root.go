@@ -14,7 +14,6 @@ var rootCmd = &cobra.Command{
 	Use:   "go-clean-up [--dir string] [--dry-run -d string]",
 	Short: "Cli Tool for cleaning unused files on your system",
 	Long:  ` "go-clean-up" helps with cleaning old, unused and redundant files from your system`,
-	Run:   func(cmd *cobra.Command, args []string) { Clean(Dir) },
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

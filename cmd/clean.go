@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
-	"path/filepath"
 
 	"github.com/grothej/go-clean-up.git/cmd/clean"
 
@@ -17,7 +16,17 @@ var cleanCmd = &cobra.Command{
 	Short: "TBD",
 	Long:  `TBD`,
 	Run: func(cmd *cobra.Command, args []string) {
-		Clean(Dir)
+		var err error
+		if Dir == "" {
+			Dir, err = os.Getwd()
+		}
+		if err != nil {
+			return
+		}
+		root := Dir
+		fsys := os.DirFS(root)
+
+		Clean(fsys)
 	},
 }
 
@@ -27,23 +36,15 @@ func init() {
 }
 
 func Clean(fsys fs.FS) {
-	var err error
-	if dir == "" {
-		dir, err = os.Getwd()
-	}
-
-	if err != nil {
-		return
-	}
-
 	var clearedDiscSpace int
-	err = filepath.Walk(dir, func(path string, info fs.FileInfo, err error) error {
+	err := fs.WalkDir(fsys, ".", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
-			return err
+			return fs.SkipDir
 		}
 
-		if info.IsDir() {
-			fmt.Println("Skip path ", path, " : is a directory")
+		info, err := fs.Stat(fsys, path)
+		if err != nil {
+			fmt.Println("Coudn't read info from ", path)
 			return nil
 		}
 
