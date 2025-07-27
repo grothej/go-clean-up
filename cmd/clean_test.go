@@ -14,7 +14,9 @@ func TestDefaultClean(t *testing.T) {
 
 	Clean(fsys)
 
-	fstest.TestFS(fsys, "keep.txt")
+	if err := fstest.TestFS(fsys, "keep.txt"); err != nil {
+		t.Fatal(err)
+	}
 }
 
 func TestCleanByExtension(t *testing.T) {
@@ -27,5 +29,7 @@ func TestCleanByExtension(t *testing.T) {
 
 	Clean(fsys)
 
-	fstest.TestFS(fsys, "secret.yaml", "important.txt")
+	if err := fstest.TestFS(fsys, "secret.yaml", "important.txt"); err != nil {
+		t.Fatal(err)
+	}
 }
