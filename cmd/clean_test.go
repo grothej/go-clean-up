@@ -3,6 +3,7 @@ package cmd
 import (
 	"testing"
 	"testing/fstest"
+	"time"
 )
 
 func TestDefaultClean(t *testing.T) {
@@ -30,6 +31,19 @@ func TestCleanByExtension(t *testing.T) {
 	Clean(fsys)
 
 	if err := fstest.TestFS(fsys, "secret.yaml", "important.txt"); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCleanByModTime(t *testing.T) {
+	fsys := fstest.MapFS{
+		"old-file.txt": {Data: []byte("remove this"), ModTime: time.Now().AddDate(0, -8, 0)},
+		"new-file.txt": {Data: []byte("keep this")},
+	}
+
+	Clean(fsys)
+
+	if err := fstest.TestFS(fsys, "new-file.txt", "old-file.txt"); err != nil {
 		t.Fatal(err)
 	}
 }
