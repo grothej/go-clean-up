@@ -47,11 +47,14 @@ func Clean(fsys fs.FS) {
 			fmt.Println("Coudn't read info from ", path)
 			return nil
 		}
+		if info.IsDir() {
+			return nil
+		}
 
 		if isFileCleanable(info) {
 			err := os.Remove(path)
 			if err != nil {
-				fmt.Println("Couldn't remove ", path)
+				fmt.Printf("Couldn't remove %s \n%s\n", path, err)
 			} else {
 				fmt.Println("Removed file: ", path)
 				clearedDiscSpace += int(info.Size())
@@ -65,7 +68,7 @@ func Clean(fsys fs.FS) {
 
 	fmt.Println("Total cleaned disc space:", clearedDiscSpace)
 	if err != nil {
-		return
+		fmt.Println(err)
 	}
 }
 
