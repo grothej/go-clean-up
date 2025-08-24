@@ -26,7 +26,10 @@ var cleanCmd = &cobra.Command{
 		root := Dir
 		fsys := os.DirFS(root)
 
-		Clean(fsys)
+		deletableFsys := DeletableFsys{
+			fsys: fsys,
+		}
+		Clean(deletableFsys)
 	},
 }
 
@@ -35,14 +38,14 @@ func init() {
 
 }
 
-func Clean(fsys fs.FS) {
+func Clean(deletableFsys DeletableFS) {
 	var clearedDiscSpace int
-	err := fs.WalkDir(fsys, ".", func(path string, d fs.DirEntry, err error) error {
+	err := fs.WalkDir(deletableFsys.GetFsys(), ".", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return fs.SkipDir
 		}
 
-		info, err := fs.Stat(fsys, path)
+		info, err := fs.Stat(deletableFsys.GetFsys(), path)
 		if err != nil {
 			fmt.Println("Coudn't read info from ", path)
 			return nil
@@ -52,7 +55,7 @@ func Clean(fsys fs.FS) {
 		}
 
 		if isFileCleanable(info) {
-			err := os.Remove(path)
+			err = deletableFsys.Remove(path)
 			if err != nil {
 				fmt.Printf("Couldn't remove %s \n%s\n", path, err)
 			} else {
