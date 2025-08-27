@@ -11,6 +11,10 @@ var cleanableExtensions = map[string]struct{}{
 	"DS_Store": {},
 	"dmg":      {},
 	"cache":    {},
+	"tmp":      {},
+	"bak":      {},
+	"backup":   {},
+	"~$*":      {},
 }
 
 func IsExtensionCleanable(info fs.FileInfo) bool {
